@@ -6,7 +6,17 @@ class CocktailsController < ApplicationController
   end
 
   def show
-    @cocktail = Cocktail.find(params[:id])
-    @cocktail_ingredients = @cocktail.cocktail_ingredients.includes(:ingredient)
+    @cocktail = Cocktail.includes(cocktail_ingredients: :ingredient).find(params[:id])
+  end
+
+  def create
+    @cocktail = Cocktail.create!(cocktail_params)
+    render :show
+  end
+
+  private
+
+  def cocktail_params
+    params.require(:cocktail).permit(:name, :photo, cocktail_ingredients_attributes: [:dose, :ingredient_id])
   end
 end
